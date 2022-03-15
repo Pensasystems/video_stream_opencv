@@ -64,6 +64,8 @@ VideoStreamConfig config;
 std::mutex q_mutex, s_mutex, c_mutex, p_mutex;
 std::queue<cv::Mat> framesQueue;
 cv::Mat frame;
+ros::Time frame_timestamp;
+double timestamp_compensation;
 boost::shared_ptr<cv::VideoCapture> cap;
 std::string video_stream_provider;
 std::string video_stream_provider_type;
@@ -131,6 +133,7 @@ virtual void do_capture() {
           }
         }
 
+		frame_timestamp = ros::Time::now() - ros::Duration(timestamp_compensation);
         frame_counter++;
         if (video_stream_provider_type == "videofile")
         {
@@ -216,7 +219,7 @@ virtual void do_publish(const ros::TimerEvent& event) {
             cam_info_msg = get_default_camera_info_from_image(msg);
         }
         // The timestamps are in sync thanks to this publisher
-        pub.publish(*msg, cam_info_msg, ros::Time::now());
+        pub.publish(*msg, cam_info_msg, frame_timestamp);
     }
 }
 
@@ -406,6 +409,8 @@ virtual void onInit() {
     pnh.reset(new ros::NodeHandle(getPrivateNodeHandle()));
     subscriber_num = 0;
 
+    // time delay compensation: update image's timestamp (published_ts = ts - timestamp_compensation)
+    pnh->param("timestamp_compensation", timestamp_compensation, 0.0);
     // provider can be an url (e.g.: rtsp://10.0.0.1:554) or a number of device, (e.g.: 0 would be /dev/video0)
     pnh->param<std::string>("video_stream_provider", video_stream_provider, "0");
     // check file type
