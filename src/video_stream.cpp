@@ -133,7 +133,7 @@ virtual void do_capture() {
           }
         }
 
-		frame_timestamp = ros::Time::now() - ros::Duration(timestamp_compensation);
+		    frame_timestamp = ros::Time::now() - ros::Duration(timestamp_compensation);
         frame_counter++;
         if (video_stream_provider_type == "videofile")
         {
@@ -410,7 +410,7 @@ virtual void onInit() {
     subscriber_num = 0;
 
     // time delay compensation: update image's timestamp (published_ts = ts - timestamp_compensation)
-    pnh->param("timestamp_compensation", timestamp_compensation, 0.0);
+    pnh->param<double>("timestamp_compensation", timestamp_compensation, 0.0);
     // provider can be an url (e.g.: rtsp://10.0.0.1:554) or a number of device, (e.g.: 0 would be /dev/video0)
     pnh->param<std::string>("video_stream_provider", video_stream_provider, "0");
     // check file type
