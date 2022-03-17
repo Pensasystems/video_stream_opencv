@@ -51,6 +51,5 @@ install(FILES nodelet_plugins.xml
 if (CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest(test/test_video_file.test)
-  add_rostest(test/test_mjpg_stream.test)
   add_rostest(test/test_rtsp_stream.test)
 endif()
