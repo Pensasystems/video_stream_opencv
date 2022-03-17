@@ -133,7 +133,7 @@ virtual void do_capture() {
           }
         }
 
-		    frame_timestamp = ros::Time::now() - ros::Duration(timestamp_compensation);
+        frame_timestamp = ros::Time::now() - ros::Duration(timestamp_compensation);
         frame_counter++;
         if (video_stream_provider_type == "videofile")
         {
