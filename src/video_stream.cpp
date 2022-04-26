@@ -295,6 +295,7 @@ virtual void subscribe() {
   cap->set(cv::CAP_PROP_CONTRAST, latest_config.contrast);
   cap->set(cv::CAP_PROP_HUE, latest_config.hue);
   cap->set(cv::CAP_PROP_SATURATION, latest_config.saturation);
+  cap->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G'));
 
   if (latest_config.auto_exposure) {
     cap->set(cv::CAP_PROP_AUTO_EXPOSURE, 0.75);
