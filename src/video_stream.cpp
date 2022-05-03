@@ -291,10 +291,19 @@ virtual void subscribe() {
     cap->set(cv::CAP_PROP_FRAME_HEIGHT, latest_config.height);
   }
 
+  // Normalize property ranges (see https://github.com/ros-drivers/video_stream_opencv/pull/102/files)
+  cap->set(cv::CAP_PROP_MODE, true);
+
+  // Set camera specific parameters
   cap->set(cv::CAP_PROP_BRIGHTNESS, latest_config.brightness);
   cap->set(cv::CAP_PROP_CONTRAST, latest_config.contrast);
   cap->set(cv::CAP_PROP_HUE, latest_config.hue);
   cap->set(cv::CAP_PROP_SATURATION, latest_config.saturation);
+
+  // Check whether we should stream mjpg images
+  if (latest_config.force_mjpg) {
+    cap->set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G'));
+  }
 
   if (latest_config.auto_exposure) {
     cap->set(cv::CAP_PROP_AUTO_EXPOSURE, 0.75);
@@ -388,6 +397,11 @@ virtual void configCallback(VideoStreamConfig& new_config, uint32_t level) {
   NODELET_INFO_STREAM("Flip vertical image is: " << ((new_config.flip_vertical)?"true":"false"));
   NODELET_INFO_STREAM("Video start frame is: " << new_config.start_frame);
   NODELET_INFO_STREAM("Video stop frame is: " << new_config.stop_frame);
+  NODELET_INFO_STREAM("Auto exposure: " << new_config.auto_exposure);
+  NODELET_INFO_STREAM("Brightess: " << new_config.brightness);
+  NODELET_INFO_STREAM("Contrast: " << new_config.contrast);
+  NODELET_INFO_STREAM("Hue: " << new_config.hue);
+  NODELET_INFO_STREAM("Saturation: " << new_config.saturation);
 
   if (new_config.width != 0 && new_config.height != 0)
   {
